@@ -9,8 +9,11 @@ Linux configs for the Nintendo Switch
 
 ## File mapping:
 `switch-dock-handler/92-dp-switch.rules usr/lib/udev/rules.d`
+
 `switch-dock-handler/dock-hotplug usr/bin`
+
 `switch-dconf-customizations/99-switch etc/dconf/db/local.d`
+
 `switch-alsa-ucm/* usr/share/alsa/ucm/tegra-snd-t210ref-mobile-rt565x`
 
 ## Contributing:
