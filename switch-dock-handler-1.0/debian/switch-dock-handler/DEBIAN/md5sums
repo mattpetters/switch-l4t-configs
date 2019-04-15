@@ -1,0 +1,4 @@
+0cf8a9b63f5d87e03c6d3e899ccb5dbc  usr/bin/dock-hotplug
+1a067cfa06df6367473ad38f584e0d84  usr/lib/udev/rules.d/92-dp-switch.rules
+94096a53921f7a6321b6587f58adadde  usr/share/doc/switch-dock-handler/changelog.Debian.gz
+1e0d33ef90d8ecb1bd1ba9e6be81b4f5  usr/share/doc/switch-dock-handler/copyright

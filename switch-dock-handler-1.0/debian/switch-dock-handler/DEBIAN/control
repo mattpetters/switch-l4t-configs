@@ -1,0 +1,10 @@
+Package: switch-dock-handler
+Version: 1.0-1
+Architecture: all
+Maintainer: Billy Laws <blaws05@gmail.com>
+Installed-Size: 16
+Depends: x11-xserver-utils, pulseaudio-utils
+Section: unknown
+Priority: optional
+Homepage: https://gitlab.com/switchroot
+Description: Scripts to switch display and audio source when docked

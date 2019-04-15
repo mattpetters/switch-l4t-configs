@@ -1,5 +1,0 @@
-build:
-  script: ./create-tarballs.sh
-  artifacts:
-    paths:
-      - "*.tar.gz"

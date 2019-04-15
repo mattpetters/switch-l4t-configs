@@ -1,0 +1,10 @@
+Package: switch-dconf-customizations
+Version: 1.0-1
+Architecture: all
+Maintainer: Billy Laws <blaws05@gmail.com>
+Installed-Size: 19
+Depends: dconf-cli
+Section: unknown
+Priority: optional
+Homepage: https://gitlab.com/switchroot/
+Description: Application configs for the Nintendo Switch

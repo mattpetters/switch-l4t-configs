@@ -1,0 +1,2 @@
+dock-hotplug usr/bin
+92-dp-switch.rules usr/lib/udev/rules.d/
