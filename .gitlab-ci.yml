@@ -2,4 +2,4 @@ build:
   script: ./create_tarballs.sh
   artifacts:
     paths:
-      - *.tar.gz
+      - "*.tar.gz"
