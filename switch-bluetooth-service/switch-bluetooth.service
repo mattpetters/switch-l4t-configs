@@ -1,0 +1,12 @@
+[Unit]
+Description=Service to enable the switches bluetooth
+After=bluetooth.service
+
+[Service]
+Type=simple
+ExecStartPre=/usr/sbin/rfkill block bluetooth
+ExecStartPre=/usr/sbin/rfkill unblock bluetooth
+ExecStart=/usr/bin/hciattach -n /dev/ttyTHS3 bcm43xx 3000000 flow nosleep -s 115200
+
+[Install]
+WantedBy=multi-user.target
