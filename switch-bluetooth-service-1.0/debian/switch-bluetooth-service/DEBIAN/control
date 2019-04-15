@@ -1,0 +1,10 @@
+Package: switch-bluetooth-service
+Version: 1.0-1
+Architecture: all
+Maintainer: Billy Laws <blaws05@gmail.com>
+Installed-Size: 13
+Depends: rfkill, bluez
+Section: unknown
+Priority: optional
+Homepage: https://gitlab.com/switchroot
+Description: Service to enable bluetooth on the Nintendo Switch

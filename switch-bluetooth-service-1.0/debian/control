@@ -1,0 +1,12 @@
+Source: switch-bluetooth-service
+Section: unknown
+Priority: optional
+Maintainer: Billy Laws <blaws05@gmail.com>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.1.2
+Homepage: https://gitlab.com/switchroot
+
+Package: switch-bluetooth-service
+Architecture: all
+Depends: ${misc:Depends}, rfkill, bluez
+Description: Service to enable bluetooth on the Nintendo Switch
