@@ -21,7 +21,7 @@ Linux configs for the Nintendo Switch
 
 `switch-bluetooth-service/switch-bluetooth.service usr/lib/systemd/system`
 
-Make sure to enable after
+`switch-touch-rules/* usr/lib/udev/rules.d`
 
 ## Contributing:
 All changes must be accompanied with and update to the projects VERSION file and
