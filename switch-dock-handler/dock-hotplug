@@ -2,13 +2,14 @@
 
 background_stuff() {
     # Wait past DE's display config
-    sleep 0.1
+    sleep 1
     export DISPLAY=
 
     while [ "$DISPLAY" = "" ]
     do
 
         cd /tmp/.X11-unix && for x in X*; do
+        if [ ! -e "$x" ]; then continue; fi
         export DISPLAY=":${x#X}"
 
         USER_NAME=$(who | awk -v vt="$DISPLAY" '$0 ~ vt {print $1}')
@@ -20,11 +21,11 @@ background_stuff() {
 
         if [[ "$1" -eq 1 ]]
         then
-            xrandr --output DP-0 --auto --output DSI-0 --off
+            sudo -u "$USER_NAME" xrandr --output DP-0 --auto --output DSI-0 --off
             sudo -u "$USER_NAME" pactl --server "$PULSE_SERVER" set-card-profile 1 off
             sudo -u "$USER_NAME" pactl --server "$PULSE_SERVER" set-card-profile 0 output:hdmi-stereo
         else
-            xrandr --output DSI-0 --auto --rotate left
+            sudo -u "$USER_NAME" xrandr --output DSI-0 --auto --rotate left
             sudo -u "$USER_NAME" pactl --server "$PULSE_SERVER" set-card-profile 1 HiFi
             sudo -u "$USER_NAME" pactl --server "$PULSE_SERVER" set-card-profile 0 off
         fi
@@ -33,4 +34,9 @@ background_stuff() {
     done
 }
 
-background_stuff "$1" & disown
+if grep -q 1 "/sys/class/switch/dp/state"; then
+        background_stuff 1 & disown
+else
+        background_stuff 0 & disown
+fi
+
