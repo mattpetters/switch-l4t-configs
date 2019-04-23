@@ -33,3 +33,7 @@ embedded-keyboard-command='onboard --xid'
 ubuntu-lock-on-suspend=false
 embedded-keyboard-enabled=true
 lock-enabled=false
+
+[com/canonical/unity-greeter]
+onscreen-keyboard=true
+
