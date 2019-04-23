@@ -1,0 +1,12 @@
+Source: switch-touch-rules
+Section: unknown
+Priority: optional
+Maintainer: Billy Laws <blaws05@gmail.com>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.1.2
+Homepage: https://gitlab.com/switchroot
+
+Package: switch-touch-rules
+Architecture: all
+Depends: ${misc:Depends}, udev, libinput10
+Description: Udev rules to rotate touchscreen on the Nintendo Switch
