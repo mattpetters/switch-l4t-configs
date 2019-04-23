@@ -1,0 +1,12 @@
+Source: switch-dock-handler
+Section: unknown
+Priority: optional
+Maintainer: Billy Laws <blaws05@gmail.com>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.1.2
+Homepage: https://gitlab.com/switchroot
+
+Package: switch-dock-handler
+Architecture: all
+Depends: ${misc:Depends}, x11-xserver-utils, pulseaudio-utils
+Description: Scripts to switch display and audio source when docked
