@@ -1,0 +1,12 @@
+switch-dconf-customizations (1.1-0ubuntu1) stable; urgency=medium
+
+  * Enable onboard in lightdm
+  * 
+
+ -- switch <switch@switch-laptop>  Tue, 23 Apr 2019 16:58:00 +0100
+
+switch-dconf-customizations (1.0-1) unstable; urgency=medium
+
+  * Initial release
+
+ -- Billy Laws <blaws05@gmail.com>  Sun, 14 Apr 2019 20:08:37 +0100

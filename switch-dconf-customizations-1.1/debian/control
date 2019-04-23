@@ -1,0 +1,12 @@
+Source: switch-dconf-customizations
+Section: unknown
+Priority: optional
+Maintainer: Billy Laws <blaws05@gmail.com>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.1.2
+Homepage: https://gitlab.com/switchroot/
+
+Package: switch-dconf-customizations
+Architecture: all
+Depends: ${misc:Depends}, dconf-cli
+Description: Application configs for the Nintendo Switch
