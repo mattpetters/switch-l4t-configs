@@ -1,0 +1,19 @@
+switch-dock-handler (1.2-1) unstable; urgency=medium
+
+  * New upstream release
+  * 
+
+ -- Billy Laws <blaws05@gmail.com>  Wed, 24 Apr 2019 18:32:43 +0100
+
+switch-dock-handler (1.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * 
+
+ -- Billy Laws <blaws05@gmail.com>  Tue, 23 Apr 2019 18:40:07 +0100
+
+switch-dock-handler (1.0-1) unstable; urgency=medium
+
+  * Initial release
+
+ -- Billy Laws <blaws05@gmail.com>  Sun, 14 Apr 2019 18:17:20 +0100
