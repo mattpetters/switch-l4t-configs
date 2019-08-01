@@ -39,7 +39,7 @@ SectionDevice."Headphones" {
 		cset "name='x HP R Playback Switch' on"
 		cset "name='x Stereo DAC MIXL DAC L1 Switch' on"
 		cset "name='x Stereo DAC MIXR DAC R1 Switch' on"
-		cset "name='x HP Playback Volume' 20,20"
+		cset "name='x HP Playback Volume' 38,38"
 		cset "name='x HP Channel Switch' on,on"
 		cset "name='x OUT MIXR DAC R1 Switch' on"
 		cset "name='x OUT MIXL DAC L1 Switch' on"
@@ -60,7 +60,7 @@ SectionDevice."Headphones" {
 	]
 
 	Value {
-		PlaybackVolume "x name='HP Playback Volume' 20,20"
+		PlaybackVolume "x name='HP Playback Volume' 38,38"
 		JackControl "x Headphone Jack"
 		PlaybackChannels "2"
 	}
@@ -83,7 +83,7 @@ SectionDevice."Speaker" {
 		cset "name='x Speaker R Playback Switch' on"
 		cset "name='x SPOL MIX SPKVOL L Switch' on"
 		cset "name='x SPOR MIX SPKVOL R Switch' on"
-		cset "name='x Speaker Playback Volume' 20,20"
+		cset "name='x Speaker Playback Volume' 30,30"
 		cset "name='x Speaker Channel Switch' on,on"
 	]
 
@@ -103,6 +103,6 @@ SectionDevice."Speaker" {
 
 	Value {
 		PlaybackChannels "2"
-		PlaybackVolume "name='x Speaker Playback Volume' 16"
+		PlaybackVolume "name='x Speaker Playback Volume' 30"
 	}
 }
