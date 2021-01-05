@@ -1,0 +1,12 @@
+Source: switch-r2p-service
+Section: unknown
+Priority: optional
+Maintainer: azkali <azkali@azkali-P2-MAX>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.1.2
+Homepage: https://gitlab.com/switchroot
+
+Package: switch-r2p-service
+Architecture: all
+Depends: ${misc:Depends}
+Description: Reboot to payload service

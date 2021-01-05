@@ -1,0 +1,12 @@
+Source: switch-xorg-conf
+Section: unknown
+Priority: optional
+Maintainer: azkali <azkali@azkali-P2-MAX>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.1.2
+Homepage: https://gitlab.com/switchroot
+
+Package: switch-xorg-conf
+Architecture: all
+Depends: ${misc:Depends}
+Description: Xorg display configuration
