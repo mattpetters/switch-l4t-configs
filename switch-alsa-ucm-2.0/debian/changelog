@@ -1,0 +1,11 @@
+switch-alsa-ucm (2.0-1) unstable; urgency=medium
+
+  * Update to UCM2
+
+ -- azkali <azkali@azkali-P2-MAX>  Tue, 05 Jan 2021 03:54:19 +0100
+
+switch-alsa-ucm (1.0-1) unstable; urgency=medium
+
+  * Initial release
+
+ -- Billy Laws <blaws05@gmail.com>  Sun, 14 Apr 2019 17:41:24 +0100

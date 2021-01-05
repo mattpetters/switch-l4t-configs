@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sed -i '0,/Directory "${CardDriver}"/{s/Directory "${CardDriver}"/Directory "${CardLongName}"/}' /usr/share/alsa/ucm2/ucm.conf
