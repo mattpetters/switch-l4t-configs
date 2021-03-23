@@ -1,15 +1,26 @@
 #!/bin/bash
 
 background_stuff() {
-	if [[ "$1" -eq 1 ]]; then sleep 1; else sleep 0.5; fi
+	#if [[ "$1" -eq 1 ]]; then sleep 1; else sleep 0.5; fi
+	#sleep 1
 	export DISPLAY=
 	export DP_SETTINGS=
+
+	# Read custom WIDTHxHEIGHT from dock-hotplug.conf
+	export DP_SETTINGS=$(cat /etc/dock-hotplug.conf)
+	if [[ -n $DP_SETTINGS ]]; then
+		export DP_SETTINGS="--primary --mode "$DP_SETTINGS" --panning "$DP_SETTINGS"+0+0 --pos 0x0"
+	else
+		export DP_SETTINGS="--primary --auto"
+	fi
 
 	while [ "$DISPLAY" = "" ]
 	do
 		cd /tmp/.X11-unix && for x in X*; do
 		if [ ! -e "$x" ]; then continue; fi
 		export DISPLAY=":${x#X}"
+
+		if [ "$DISPLAY" = "" ]; then sleep 1; continue; fi
 
 		USER_NAME=$(who | awk -v vt="$DISPLAY" '$0 ~ vt {print $1}')
 		USER_ID=$(id -u "$USER_NAME")
@@ -20,13 +31,6 @@ background_stuff() {
 
 		if [[ "$1" -eq 1 ]]
 		then
-			# Read custom WIDTHxHEIGHT from dock-hotplug.conf
-			export DP_SETTINGS=$(cat /etc/dock-hotplug.conf)
-			if [[ -n $DP_SETTINGS ]]; then
-				export DP_SETTINGS="--mode "$DP_SETTINGS" --panning "$DP_SETTINGS"+0+0 --pos 0x0"
-			else
-				export DP_SETTINGS="--auto"
-			fi
 			xrandr --output DP-0 $DP_SETTINGS --output DSI-0 --off
 			xinput disable 6 #disable touch screen
 			sudo -u "$USER_NAME" xrandr --output DP-0 $DP_SETTINGS --output DSI-0 --off
@@ -34,7 +38,7 @@ background_stuff() {
 			sudo -u "$USER_NAME" pactl --server "$PULSE_SERVER" set-card-profile 1 off
 			sudo -u "$USER_NAME" pactl --server "$PULSE_SERVER" set-card-profile 0 output:hdmi-stereo
 		else
-			xrandr --output DSI-0 --mode 720x1280 --rotate left --panning 1280x720+0+0 --pos 0x0 --dpi 237
+			xrandr --output DSI-0 --primary --mode 720x1280 --rotate left --panning 1280x720+0+0 --pos 0x0 --dpi 237
 			xinput enable 6 #enable touch screen
 			sudo -u "$USER_NAME" xrandr --output DSI-0 --mode 720x1280 --rotate left --panning 1280x720+0+0 --pos 0x0 --dpi 237
 			sudo -u "$USER_NAME" xinput enable 6 #enable touch screen
@@ -43,13 +47,19 @@ background_stuff() {
 			gsettings set com.ubuntu.user-interface scale-factor "{'': 8, 'DSI-0': 10, 'DP-0': 8}"
 		fi
 		done
-		sleep 1
 	done
 }
 
-if grep -q 1 "/sys/class/switch/dp/state"; then
-		background_stuff 1 & disown
-else
-		background_stuff 0 & disown
-fi
+loops=1
+if [[ "$1" -eq 1 ]]; then loops=5; fi
 
+i=1
+while [ "$i" -le "$loops" ]; do
+    if grep -q 1 "/sys/class/switch/dp/state"; then
+		    background_stuff 1 & disown
+    else
+		    background_stuff 0 & disown
+    fi
+    i=$(($i + 1))
+    if [[ "$loops" -eq 5 ]]; then sleep 1; fi
+done
