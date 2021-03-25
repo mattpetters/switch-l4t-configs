@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Switch display script
+Exec=/usr/bin/dock-hotplug 1
+NoDisplay=true
+X-GNOME-AutoRestart=true
+X-GNOME-Autostart-enabled=true
+X-Ubuntu-Gettext-Domain=switch-dock-hotplug
+
