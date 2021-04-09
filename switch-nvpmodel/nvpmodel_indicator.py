@@ -31,7 +31,6 @@ from gi.repository import GObject
 
 INDICATOR_ID = 'nvpmodel'
 ICON_DEFAULT = os.path.abspath('/usr/share/nvpmodel_indicator/nv_logo.svg')
-ICON_WARNING = 'dialog-warning'
 
 nvpmodel_helper_path = "/usr/share/nvpmodel_indicator/nvpmodel_helper.sh"
 
@@ -39,25 +38,15 @@ GET_USB3_DISABLED = '0'
 SET_USB3_ENABLE = '1'
 SET_USB3_DISABLE = '2'
 SET_FAN_COEFF = '3'
+GET_AUTO_PROFILES = '4'
+SET_AUTO_PROFILES = '5'
+
 FAN_DEV1 = '0'
 FAN_DEV2 = '1'
 
 notify_disable = False
 usb3_disable = False
-
-def pm_update_active(item):
-    cur_mode = pm.cur_mode()
-    menu = item.get_submenu()
-    for child in menu.get_children():
-        if child.get_label()[0] == cur_mode:
-            child.set_active(True)
-
-def fm_update_active(item):
-    cur_mode = fm.cur_mode()
-    menu = item.get_submenu()
-    for child in menu.get_children():
-        if child.get_label()[0] == cur_mode:
-            child.set_active(True)
+auto_profiles = False
 
 def confirm_reboot():
     dialog = gtk.MessageDialog(None, 0, gtk.MessageType.WARNING,
@@ -87,6 +76,16 @@ def do_tegrastats(_):
     cmd = "x-terminal-emulator -e pkexec tegrastats".split()
     subprocess.call(cmd)
 
+def do_auto_profiles(self):
+    global auto_profiles
+    if auto_profiles == self.get_active():
+        return
+    auto_profiles = self.get_active()
+    if auto_profiles:
+        subprocess.call([nvpmodel_helper_path, SET_AUTO_PROFILES, '1'])
+    else:
+        subprocess.call([nvpmodel_helper_path, SET_AUTO_PROFILES, '0'])
+
 def do_disable_usb3(self):
     global usb3_disable
     if usb3_disable == self.get_active():
@@ -106,90 +105,75 @@ def do_disable_usb3(self):
     else:
         self.set_active(usb3_disable)
 
-
-def clear_throttling_notification():
-    indicator.set_icon(ICON_DEFAULT)
-    item_throttle_evt.set_sensitive(False)
-
-def disable_notification(self):
-    global notify_disable
-    notify_disable = self.get_active()
-    if notify_disable and indicator.get_icon() == ICON_WARNING:
-        clear_throttling_notification()
-
 def quit(_):
     running.clear()
     gtk.main_quit()
 
-def ack_warning(*args):
-    ack = gtk.MessageDialog(None, 0, gtk.MessageType.WARNING,
-        gtk.ButtonsType.CLOSE, "System was throttled due to low input voltage.")
-    ack.set_title("WARNING")
-    ack.format_secondary_text("")
-    ack.run()
-    ack.destroy()
-    clear_throttling_notification()
-
 def build_menu():
     global item_throttle_evt
     global usb3_disable
+    global main_menu
 
     menu = gtk.Menu()
-    item_pm = gtk.MenuItem('Power mode')
-    item_pm.connect('activate', pm_update_active)
+    main_menu = menu
+
+    item_pm = gtk.MenuItem('Power modes:')
+    item_pm.set_sensitive(False)
     menu.append(item_pm)
 
-    submenu = gtk.Menu()
     group = []
     for mode in pm.power_modes():
         label = mode.id + ': ' + mode.name
         item_mode = gtk.RadioMenuItem.new_with_label(group, label)
         group = item_mode.get_group()
         item_mode.connect('activate', set_power_mode, mode.id)
-        submenu.append(item_mode)
-    item_pm.set_submenu(submenu)
+        menu.append(item_mode)
 
-    item_fm = gtk.MenuItem('Fan mode')
-    item_fm.connect('activate', fm_update_active)
+    item_sep = gtk.SeparatorMenuItem()
+    menu.append(item_sep)
+
+    item_fm = gtk.MenuItem('Fan modes:')
+    item_fm.set_sensitive(False)
     menu.append(item_fm)
 
-    fsubmenu = gtk.Menu()
     fgroup = []
     for mode in fm.fan_modes():
         label = mode.id + ': ' + mode.name
         item_mode = gtk.RadioMenuItem.new_with_label(fgroup, label)
         fgroup = item_mode.get_group()
         item_mode.connect('activate', set_fan_mode, mode.id)
-        fsubmenu.append(item_mode)
-    item_fm.set_submenu(fsubmenu)
+        menu.append(item_mode)
 
-    item_sep1 = gtk.SeparatorMenuItem()
-    menu.append(item_sep1)
+    item_sep = gtk.SeparatorMenuItem()
+    menu.append(item_sep)
+
+    item_setting = gtk.MenuItem('Settings:')
+    item_setting.set_sensitive(False)
+    menu.append(item_setting)
+
+    item_auto = gtk.CheckMenuItem('Automatic profiles')
+    item_auto.connect('toggled', do_auto_profiles)
+    menu.append(item_auto)
+    auto_profiles = subprocess.call([nvpmodel_helper_path, GET_AUTO_PROFILES])
+    if auto_profiles:
+        item_auto.set_active(True);
+
+    item_usb3 = gtk.CheckMenuItem('Disable USB3')
+    item_usb3.connect('toggled', do_disable_usb3)
+    menu.append(item_usb3)
+    usb3_disable = subprocess.call([nvpmodel_helper_path, GET_USB3_DISABLED])
+    if usb3_disable:
+        item_usb3.set_active(True);
+
+    item_sep = gtk.SeparatorMenuItem()
+    menu.append(item_sep)
 
     item_tstats = gtk.MenuItem('Run tegrastats')
     item_tstats.connect('activate', do_tegrastats)
     menu.append(item_tstats)
 
-    item_throttle_evt = gtk.MenuItem('Acknowledge throttling')
-    item_throttle_evt.set_sensitive(False)
-    item_throttle_evt.connect('activate', ack_warning)
-    menu.append(item_throttle_evt)
-
-    menu_options = gtk.Menu()
-    item_setting = gtk.MenuItem('Settings')
-    item_setting.set_submenu(menu_options)
-    menu.append(item_setting)
-
-    item_usb3 = gtk.CheckMenuItem('Disable USB3')
-    item_usb3.connect('toggled', do_disable_usb3)
-    menu_options.append(item_usb3)
-    usb3_disable = subprocess.call([nvpmodel_helper_path, GET_USB3_DISABLED])
-    if usb3_disable:
-        item_usb3.set_active(True);
-
-    item_notify_dis = gtk.CheckMenuItem('Disable notification')
-    item_notify_dis.connect('toggled', disable_notification)
-    menu_options.append(item_notify_dis)
+    item_sep = gtk.SeparatorMenuItem()
+    menu.append(item_sep)
 
     item_quit = gtk.MenuItem('Quit')
     item_quit.connect('activate', quit)
@@ -198,42 +182,45 @@ def build_menu():
     menu.show_all()
     return menu
 
-def do_warning():
-    if notify_disable:
-        return
-    indicator.set_icon(ICON_WARNING)
-    item_throttle_evt.set_sensitive(True)
-    warning.show()
-
 def mode_change_monitor(running):
+    global main_menu
     cur_mode = pm.cur_mode()
+    cur_fmode = fm.cur_mode()
+    pmode_changed = False
+    fmode_changed = False
     while running.is_set():
         if cur_mode != pm.cur_mode():
+            pmode_changed = True
             cur_mode = pm.cur_mode()
-            # Let main thread do GUI things otherwise there can be
-            # conflicts.
+            # Let main thread do GUI things otherwise there can be conflicts.
             GObject.idle_add(
-                indicator.set_label,
-                pm.get_name_by_id(cur_mode), INDICATOR_ID,
+                indicator.set_label, pm.get_name_by_id(cur_mode), INDICATOR_ID,
                 priority=GObject.PRIORITY_DEFAULT)
-        time.sleep(1)
-
-def evt_monitor(running):
-    evt_cnt = None
-    regex = re.compile(" *(\d+): +(\d+).*soctherm_edp.*")
-    while running.is_set():
-        for line in open("/proc/interrupts"):
-            m = regex.match(line)
-            if m != None:
-                break
-        if m == None:
-            return
-        if evt_cnt != m.group(2):
-            if evt_cnt:
-                do_warning()
-            evt_cnt = m.group(2)
-        time.sleep(1)
-
+        if cur_fmode != fm.cur_mode():
+            fmode_changed = True
+            cur_fmode = fm.cur_mode()
+            fan_dev1_coeff = fm.get_dev1_coeff_by_id(cur_fmode)
+            fan_dev2_coeff = fm.get_dev2_coeff_by_id(cur_fmode)
+            if fan_dev1_coeff != "" and fan_dev2_coeff != "":
+                subprocess.call([nvpmodel_helper_path, SET_FAN_COEFF, FAN_DEV1, fan_dev1_coeff])
+                subprocess.call([nvpmodel_helper_path, SET_FAN_COEFF, FAN_DEV2, fan_dev2_coeff])
+        # Update active modes in menu
+        if pmode_changed or fmode_changed:
+            child = None
+            fan_modes = False
+            for child in main_menu.get_children():
+                label = child.get_label()
+                if not fan_modes and pmode_changed and label and label[0] == cur_mode:
+                    pmode_changed = False
+                    # Let main thread do GUI things otherwise there can be conflicts.
+                    GObject.idle_add(child.set_active, True, priority=GObject.PRIORITY_DEFAULT)
+                if fan_modes and fmode_changed and label and label[0] == cur_fmode:
+                    fmode_changed = False
+                    # Let main thread do GUI things otherwise there can be conflicts.
+                    GObject.idle_add(child.set_active, True, priority=GObject.PRIORITY_DEFAULT)
+                if label == 'Fan modes:':
+                    fan_modes = True
+        time.sleep(2)
 
 pm = nvpm.nvpmodel()
 fm = nvpm.nvfmodel()
@@ -243,6 +230,9 @@ fm = nvpm.nvfmodel()
 for mode in pm.power_modes():
     mode.name = mode.name.replace('_', ' ')
 
+for mode in fm.fan_modes():
+    mode.name = mode.name.replace('_', ' ')
+
 # AppIndicator3 doesn't handle SIGINT, wire it up.
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
@@ -250,13 +240,15 @@ notify.init(INDICATOR_ID)
 warning = notify.Notification.new("WARNING",
     "system is now being throttled", None)
 
+power_mode = pm.cur_mode()
 indicator = appindicator.Indicator.new(INDICATOR_ID, ICON_DEFAULT,
     appindicator.IndicatorCategory.SYSTEM_SERVICES)
-indicator.set_label(pm.get_name_by_id(pm.cur_mode()), INDICATOR_ID)
+indicator.set_label(pm.get_name_by_id(power_mode), INDICATOR_ID)
 indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
-indicator.set_menu(build_menu())
+main_menu = build_menu()
+indicator.set_menu(main_menu)
 
-#Set fan coeffs
+# Set fan coeffs
 fan_mode = fm.cur_mode()
 fan_dev1_coeff = fm.get_dev1_coeff_by_id(fan_mode)
 fan_dev2_coeff = fm.get_dev2_coeff_by_id(fan_mode)
@@ -264,9 +256,20 @@ if fan_dev1_coeff != "" and fan_dev2_coeff != "":
     subprocess.call([nvpmodel_helper_path, SET_FAN_COEFF, FAN_DEV1, fan_dev1_coeff])
     subprocess.call([nvpmodel_helper_path, SET_FAN_COEFF, FAN_DEV2, fan_dev2_coeff])
 
+# Set active modes in menu
+child = None
+fan_modes = False
+for child in main_menu.get_children():
+    label = child.get_label()
+    if not fan_modes and label and label[0] == power_mode:
+        child.set_active(True)
+    if fan_modes and label and label[0] == fan_mode:
+        child.set_active(True)
+    if label == 'Fan modes:':
+        fan_modes = True
+
 running = threading.Event()
 running.set()
-threading.Thread(target=evt_monitor, args=[running]).start()
 threading.Thread(target=mode_change_monitor, args=[running]).start()
 
 gtk.main()
