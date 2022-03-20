@@ -5,7 +5,8 @@ Linux configs for the Nintendo Switch
 
   * switch-dock-handler - Toggles display and audio when the console is docked.
   * switch-dconf-customizations - Various customizations to programs for the switch.
-  * switch-alsa-ucm - ALSA UCM2 configurations to support headphones and speakers.
+  * switch-alsa-ucm - ALSA UCM1 configurations to support headphones and speakers.
+  * switch-alsa-ucm2 - ALSA UCM2 configurations to support headphones/mic and speakers.
   * switch-bluetooth-service - Service to load the firmware to the switches bluetooth chip.
   * switch-r2p-service - Reboot to Payload service by default reboot to Hekate bootloader.
   * switch-xorg-conf - Xorg monitor configuration.
@@ -21,6 +22,9 @@ Linux configs for the Nintendo Switch
 
 `switch-alsa-ucm/tegra-snd-t210ref-mobile-rt565x.conf usr/share/alsa/ucm/tegra-snd-t210ref-mobile-rt565x`
 `switch-alsa-ucm/HiFi usr/share/alsa/ucm/tegra-snd-t210ref-mobile-rt565x`
+
+`switch-alsa-ucm2/tegra-snd-t210r.conf /usr/share/alsa/ucm2/tegra-snd-t210r/tegra-snd-t210r.conf`
+`switch-alsa-ucm2/HiFi.conf /usr/share/alsa/ucm2/tegra-snd-t210r/HiFi.conf`
 
 `switch-bluetooth-service/switch-bluetooth.service usr/lib/systemd/system`
 
